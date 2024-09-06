@@ -11,7 +11,7 @@ class Manufacturer(models.Model):
         ordering = ("name",)
 
     def __str__(self) -> str:
-        return f"Name: {self.name} country: {self.country}"
+        return self.name
 
 
 class Driver(AbstractUser):
@@ -21,23 +21,21 @@ class Driver(AbstractUser):
         ordering = ("username",)
 
     def __str__(self) -> str:
-        return f"{self.license_number}"
+        return f"{self.username}: {self.first_name} {self.last_name}"
 
 
 class Car(models.Model):
     model = models.CharField(max_length=250)
     manufacturer = models.ForeignKey(
-        Manufacturer,
-        on_delete=models.CASCADE,
-        related_name="cars"
+        Manufacturer, on_delete=models.CASCADE, related_name="cars"
     )
-    drivers = models.ManyToManyField(
-        settings.AUTH_USER_MODEL,
-        related_name="cars"
-    )
+    drivers = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="cars")
 
     class Meta:
-        ordering = ("model", "manufacturer",)
+        ordering = (
+            "model",
+            "manufacturer",
+        )
 
     def __str__(self) -> str:
         return f"{self.model} {self.manufacturer.name}"
